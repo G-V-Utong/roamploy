@@ -21,10 +21,7 @@ export default function NewsletterForm({ onSuccess }: NewsletterFormProps) {
 
     // Simulate API call
     setTimeout(() => {
-      toast({
-        title: "Success!",
-        description: "You've been subscribed to our newsletter.",
-      })
+      toast.success("You've been subscribed to our newsletter.")
       setEmail("")
       setLoading(false)
 

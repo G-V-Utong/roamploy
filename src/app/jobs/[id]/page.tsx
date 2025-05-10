@@ -31,10 +31,7 @@ export default function JobPage({ params }: JobPageProps) {
 
   const handleApply = () => {
     if (!user) {
-      toast({
-        title: "Authentication required",
-        description: "Please sign in to apply for this job",
-      })
+      toast.error("Please sign in to apply for this job")
       router.push("/signin")
       return
     }
@@ -43,10 +40,7 @@ export default function JobPage({ params }: JobPageProps) {
 
     // Simulate API call
     setTimeout(() => {
-      toast({
-        title: "Application submitted!",
-        description: "Your application has been sent to the employer.",
-      })
+      toast.success("Your application has been sent to the employer.")
       setIsApplying(false)
     }, 1500)
   }

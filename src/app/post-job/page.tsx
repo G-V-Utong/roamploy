@@ -24,10 +24,7 @@ export default function PostJobPage() {
   // Redirect if not authenticated
   useEffect(() => {
     if (!isLoading && !user) {
-      toast({
-        title: "Authentication required",
-        description: "Please sign in to post a job",
-      })
+      toast.error("Please sign in to post a job")
       router.push("/signin?redirect=/post-job")
     }
   }, [user, isLoading, router])
@@ -48,18 +45,11 @@ export default function PostJobPage() {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 2000))
 
-      toast({
-        title: "Job posted successfully!",
-        description: "Your job listing has been published.",
-      })
+      toast.success("Your job listing has been published.")
 
       router.push("/dashboard")
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to post job. Please try again.",
-        variant: "destructive",
-      })
+      toast.error("Failed to post job. Please try again.")
     } finally {
       setIsSubmitting(false)
     }

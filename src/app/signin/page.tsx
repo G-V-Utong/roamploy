@@ -31,24 +31,13 @@ export default function SignInPage() {
       const success = await signIn(email, password)
 
       if (success) {
-        toast({
-          title: "Success!",
-          description: "You have successfully signed in.",
-        })
+        toast.success("You have successfully signed in.")
         router.push("/dashboard")
       } else {
-        toast({
-          title: "Error",
-          description: "Invalid email or password. Please try again.",
-          variant: "destructive",
-        })
+        toast.error("Invalid email or password. Please try again.")
       }
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Something went wrong. Please try again.",
-        variant: "destructive",
-      })
+      toast.error("Something went wrong. Please try again.")
     } finally {
       setIsLoading(false)
     }
@@ -58,7 +47,7 @@ export default function SignInPage() {
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1 flex items-center justify-center py-12">
-        <div className="container px-4 md:px-6">
+        <div className="container m-auto px-4 md:px-6">
           <div className="mx-auto max-w-md space-y-6">
             <div className="flex justify-center">
               <div className="flex items-center">

@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { toast } from "@/hooks/use-toast"
+import { toast } from "sonner"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
 
@@ -26,16 +26,9 @@ export default function ForgotPasswordPage() {
       await new Promise((resolve) => setTimeout(resolve, 1500))
 
       setIsSubmitted(true)
-      toast({
-        title: "Reset link sent",
-        description: "If an account exists with that email, you'll receive a password reset link.",
-      })
+      toast.success("If an account exists with that email, you'll receive a password reset link.")
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Something went wrong. Please try again.",
-        variant: "destructive",
-      })
+      toast.error("Something went wrong. Please try again.")
     } finally {
       setIsLoading(false)
     }
@@ -56,7 +49,7 @@ export default function ForgotPasswordPage() {
               <CardHeader className="space-y-1">
                 <CardTitle className="text-2xl font-bold text-center">Forgot password</CardTitle>
                 <CardDescription className="text-center">
-                  Enter your email address and we'll send you a link to reset your password
+                  Enter your email address and we&apos;ll send you a link to reset your password
                 </CardDescription>
               </CardHeader>
               {!isSubmitted ? (
@@ -91,10 +84,10 @@ export default function ForgotPasswordPage() {
                   <div className="rounded-lg bg-muted p-6 text-center">
                     <h3 className="mb-2 text-lg font-medium">Check your email</h3>
                     <p className="mb-4 text-sm text-muted-foreground">
-                      We've sent a password reset link to <strong>{email}</strong>
+                      We&apos;ve sent a password reset link to <strong>{email}</strong>
                     </p>
                     <p className="text-sm text-muted-foreground">
-                      Didn't receive the email? Check your spam folder or{" "}
+                      Didn&apos;t receive the email? Check your spam folder or{" "}
                       <button
                         type="button"
                         className="text-primary underline-offset-4 hover:underline"
