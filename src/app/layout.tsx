@@ -24,12 +24,11 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${dancingScript.variable}`}>
-      <body className={inter.className}>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.className} ${dancingScript.variable}`}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <AuthProvider>
             {children}
-            <Toaster />
             <NewsletterModal />
           </AuthProvider>
         </ThemeProvider>

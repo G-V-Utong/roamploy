@@ -4,8 +4,8 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/components/auth/auth-context"
-import Header from "@/components/header"
-import Footer from "@/components/footer"
+import Header from "@/components/header"  // Update import to use named export
+import Footer from "@/components/footer"  // Update import to use named export
 import JobPostingForm from "@/components/job-posting/job-posting-form"
 import JobPostingPreview from "@/components/job-posting/job-posting-preview"
 import { toast } from "sonner"

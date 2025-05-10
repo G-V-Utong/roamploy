@@ -55,7 +55,7 @@ export default function JobPage({ params }: JobPageProps) {
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1">
-        <div className="container px-4 py-8 md:px-6 md:py-12">
+        <div className="container m-auto px-4 py-8 md:px-6 md:py-12">
           <Link href="/jobs" className="inline-flex items-center text-sm font-medium mb-6">
             <ArrowLeft className="mr-1 h-4 w-4" />
             Back to jobs

@@ -37,15 +37,6 @@ export default function NewsletterModal() {
           <DialogDescription className="text-center">
             Subscribe to our newsletter and receive the latest remote job opportunities directly in your inbox.
           </DialogDescription>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute right-4 top-4"
-            onClick={handleClose}
-            aria-label="Close"
-          >
-            <X className="h-4 w-4" />
-          </Button>
         </DialogHeader>
         <div className="p-4 pt-0">
           <div className="mb-6">

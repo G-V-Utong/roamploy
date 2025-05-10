@@ -12,7 +12,7 @@ export default function JobsPage() {
       <Header />
       <main className="flex-1">
         <div className="bg-muted py-8">
-          <div className="container px-4 md:px-6">
+          <div className="container m-auto px-4 md:px-6">
             <div className="w-full max-w-3xl mx-auto space-y-2">
               <h1 className="text-2xl font-bold text-center mb-4">Find Your Perfect Remote Job</h1>
               <div className="relative">

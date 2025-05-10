@@ -38,7 +38,7 @@ export default function DashboardPage() {
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1 py-10">
-        <div className="container px-4 md:px-6">
+        <div className="container px-4 md:px-6 m-auto">
           <div className="grid gap-8">
             <div>
               <h1 className="text-3xl font-bold mb-2">Welcome back, {user.name}</h1>

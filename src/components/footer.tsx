@@ -3,7 +3,7 @@ import Link from "next/link"
 export default function Footer() {
   return (
     <footer className="border-t py-6 md:py-8">
-      <div className="container flex flex-col gap-4 md:flex-row md:items-center md:gap-8 px-4 md:px-6">
+      <div className="container m-auto flex flex-col gap-4 md:flex-row md:items-center md:gap-8 px-4 md:px-6">
         <div className="flex items-center">
           <span className="text-xl font-bold font-dancing-script">Roamploy</span>
         </div>
