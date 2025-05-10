@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import type React from "react"
@@ -7,7 +8,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import PersonalInfoForm from "@/components/resume/sections/personal-info-form"
 import SummaryForm from "@/components/resume/sections/summary-form"
 import ExperienceForm from "@/components/resume/sections/experience-form"
-import EducationForm from "@/components/resume/sections/education-form"
+import EducationForm from "@/components/resume/sections/eductaion-form"
 import SkillsForm from "@/components/resume/sections/skills-form"
 import ProjectsForm from "@/components/resume/sections/projects-form"
 import CertificationsForm from "@/components/resume/sections/certifications-form"

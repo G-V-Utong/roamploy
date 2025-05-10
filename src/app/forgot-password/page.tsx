@@ -31,8 +31,9 @@ export default function ForgotPasswordPage() {
       } else {
         toast.error("Failed to send reset link. Please try again.")
       }
-    } catch (error: any) {
-      toast.error(error?.message || "Something went wrong. Please try again.")
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Something went wrong. Please try again."
+      toast.error(message)
     } finally {
       setIsLoading(false)
     }

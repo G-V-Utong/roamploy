@@ -154,7 +154,7 @@ export default function DashboardPage() {
                 <CardContent>
                   <nav className="grid gap-2">
                     <Link
-                      href="/profile"
+                      href="/profile/resume"
                       className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-accent"
                     >
                       <FileText className="h-4 w-4" />
