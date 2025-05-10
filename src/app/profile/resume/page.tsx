@@ -73,12 +73,6 @@ export default function ResumePage() {
     toast("Your resume has been exported successfully.")
   }
 
-  const handleUploadSuccess = (data: ResumeData) => {
-    setResumeData(data)
-    setActiveTab("builder")
-    toast("Your resume has been uploaded and parsed successfully.")
-  }
-
   if (isLoading) {
     return (
       <div className="flex min-h-screen flex-col">
@@ -154,7 +148,11 @@ export default function ResumePage() {
                     <ResumeBuilder resumeData={resumeData} setResumeData={setResumeData} />
                   </TabsContent>
                   <TabsContent value="upload">
-                    <ResumeUploader onUploadSuccess={handleUploadSuccess} />
+                    <ResumeUploader onUploadSuccess={(data: ResumeData) => {
+                      setResumeData(data)
+                      setActiveTab("builder")
+                      toast("Your resume has been uploaded and parsed successfully.")
+                    }} />
                   </TabsContent>
                 </Tabs>
               </CardContent>
