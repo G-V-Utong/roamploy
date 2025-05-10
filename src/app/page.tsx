@@ -12,8 +12,15 @@ export default function HomePage() {
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1">
-        <section className="bg-muted py-12 md:py-24">
-          <div className="container m-auto px-4 md:px-6">
+        <section className="bg-muted py-12 md:py-24 relative">
+          <div className="absolute inset-0 z-0">
+            <img
+              src="/images/remote-work2.jpg"
+              alt="Remote worker"
+              className="w-full h-full object-cover opacity-15"
+            />
+          </div>
+          <div className="container m-auto px-4 md:px-6 relative z-10">
             <div className="flex flex-col items-center space-y-4 text-center">
               <div className="space-y-2">
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
@@ -22,7 +29,6 @@ export default function HomePage() {
                 <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
                   Discover thousands of remote opportunities across different fields and skills.
                 </p>
-
               </div>
               <div className="w-full max-w-3xl space-y-2">
                 <div className="relative">
