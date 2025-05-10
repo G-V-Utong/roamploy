@@ -29,11 +29,7 @@ export default function SignUpPage() {
     e.preventDefault()
 
     if (password !== confirmPassword) {
-      toast({
-        title: "Error",
-        description: "Passwords do not match. Please try again.",
-        variant: "destructive",
-      })
+      toast.error("Passwords do not match. Please try again.")
       return
     }
 
@@ -43,24 +39,12 @@ export default function SignUpPage() {
       const success = await signUp(name, email, password)
 
       if (success) {
-        toast({
-          title: "Success!",
-          description: "Your account has been created. You are now signed in.",
-        })
+        toast.success("Your account has been created. You are now signed in.")
         router.push("/dashboard")
       } else {
-        toast({
-          title: "Error",
-          description: "This email is already in use. Please try another one.",
-          variant: "destructive",
-        })
-      }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Something went wrong. Please try again.",
-        variant: "destructive",
-      })
+        toast.error("This email is already in use. Please try another one.")
+    } }catch (error) {
+      toast.error("Something went wrong. Please try again.")
     } finally {
       setIsLoading(false)
     }

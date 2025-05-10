@@ -11,24 +11,28 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { toast } from "sonner"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
+import { useAuth } from "@/components/auth/auth-context"
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const { resetPassword } = useAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-
-      setIsSubmitted(true)
-      toast.success("If an account exists with that email, you'll receive a password reset link.")
-    } catch (error) {
-      toast.error("Something went wrong. Please try again.")
+      const success = await resetPassword(email)
+      if (success) {
+        setIsSubmitted(true)
+        toast.success("If an account exists with that email, you'll receive a password reset link.")
+      } else {
+        toast.error("Failed to send reset link. Please try again.")
+      }
+    } catch (error: any) {
+      toast.error(error?.message || "Something went wrong. Please try again.")
     } finally {
       setIsLoading(false)
     }

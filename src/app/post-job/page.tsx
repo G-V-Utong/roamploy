@@ -4,8 +4,8 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/components/auth/auth-context"
-import Header from "@/components/header"  // Update import to use named export
-import Footer from "@/components/footer"  // Update import to use named export
+import Header from "@/components/header" 
+import Footer from "@/components/footer" 
 import JobPostingForm from "@/components/job-posting/job-posting-form"
 import JobPostingPreview from "@/components/job-posting/job-posting-preview"
 import { toast } from "sonner"
@@ -75,7 +75,7 @@ export default function PostJobPage() {
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1 py-10">
-        <div className="container px-4 md:px-6">
+        <div className="container m-auto px-4 md:px-6">
           <div className="mx-auto max-w-4xl">
             <div className="mb-8">
               <h1 className="text-3xl font-bold mb-2">Post a Job</h1>

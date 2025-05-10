@@ -217,7 +217,7 @@ export default function JobPage({ params }: JobPageProps) {
         </div>
 
         <section className="bg-muted py-12">
-          <div className="container px-4 md:px-6">
+          <div className="container m-auto px-4 md:px-6">
             <div className="mx-auto max-w-2xl text-center">
               <h2 className="text-2xl font-bold mb-4">Never Miss a Remote Opportunity</h2>
               <p className="text-muted-foreground mb-6">

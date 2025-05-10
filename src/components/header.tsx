@@ -22,7 +22,7 @@ export default function Header() {
     <header className="sticky top-0 z-40 border-b bg-background">
       <div className="container m-auto flex h-16 items-center justify-between py-4">
         <div className="flex items-center">
-          <Link href="/" className="text-2xl font-bold font-dancing-script">
+          <Link href="/" className="text-3xl font-bold font-dancing-script text-primary">
             Roamploy
           </Link>
         </div>

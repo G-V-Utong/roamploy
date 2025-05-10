@@ -47,7 +47,7 @@ export default function SignInPage() {
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1 flex items-center justify-center py-12">
-        <div className="container m-auto px-4 md:px-6">
+        <div className="container px-4 md:px-6">
           <div className="mx-auto max-w-md space-y-6">
             <div className="flex justify-center">
               <div className="flex items-center">

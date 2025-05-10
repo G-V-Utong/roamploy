@@ -17,11 +17,12 @@ export default function HomePage() {
             <div className="flex flex-col items-center space-y-4 text-center">
               <div className="space-y-2">
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                  Find Your Perfect Remote Job with Roamploy
+                  Find Your Perfect Remote Job with <span className="font-dancing-script text-primary text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">Roamploy </span>
                 </h1>
                 <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
                   Discover thousands of remote opportunities across different fields and skills.
                 </p>
+
               </div>
               <div className="w-full max-w-3xl space-y-2">
                 <div className="relative">
