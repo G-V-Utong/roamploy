@@ -3,7 +3,6 @@ import type { Metadata } from "next"
 import { Inter, Dancing_Script } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
-import { Toaster } from "sonner"
 import { AuthProvider } from "@/components/auth/auth-context"
 import NewsletterModal from "@/components/newsletter-modal"
 
