@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
 import type React from "react"
@@ -43,7 +44,8 @@ export default function SignUpPage() {
         router.push("/dashboard")
       } else {
         toast.error("This email is already in use. Please try another one.")
-    } }catch (error) {
+      }
+    } catch (error) {
       toast.error("Something went wrong. Please try again.")
     } finally {
       setIsLoading(false)
