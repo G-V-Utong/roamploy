@@ -1,10 +1,11 @@
+"use client"
 import Link from "next/link"
-import Image from "next/image"
 import { MapPin, Clock, DollarSign, Bookmark } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import type { JobType } from "@/lib/types"
+import { formatRelativeDate } from "@/lib/utils"
 
 interface JobCardProps {
   job: JobType
@@ -17,11 +18,10 @@ export default function JobCard({ job }: JobCardProps) {
         <div className="p-6">
           <div className="flex items-start justify-between">
             <div className="flex gap-4">
-              <div className="relative h-12 w-12 overflow-hidden rounded-md">
-                <Image
-                  src={job.companyLogo || "/placeholder.svg"}
-                  alt={job.companyName}
-                  fill
+              <div className="relative h-12 w-12 overflow-hidden rounded-md bg-background">
+                <img
+                  src={`https://logo.clearbit.com/${job.company_website}` || "/images/companyLogo.jpg"}
+                  alt={`${job.companyName} logo`}
                   className="object-cover"
                 />
               </div>
@@ -56,17 +56,19 @@ export default function JobCard({ job }: JobCardProps) {
           <div className="mt-4 flex flex-wrap gap-4 text-sm text-muted-foreground">
             <div className="flex items-center">
               <Clock className="mr-1 h-4 w-4" />
-              {job.jobType}
+              {job.job_type}
             </div>
             <div className="flex items-center">
               <DollarSign className="mr-1 h-4 w-4" />
-              {job.salary}
+              {job.salary_min || job.salary_max ? `${job.salary_min} - ${job.salary_max} ${job.salary_currency} ` : "Not specified"}
             </div>
           </div>
           <p className="mt-4 text-sm line-clamp-2">{job.description}</p>
         </div>
         <div className="flex items-center justify-between bg-muted p-4">
-          <span className="text-sm text-muted-foreground">Posted {job.postedDate}</span>
+          <span className="text-sm text-muted-foreground">
+            Posted {formatRelativeDate(job.created_at)}
+          </span>
           <Link href={`/jobs/${job.id}`}>
             <Button>View Job</Button>
           </Link>

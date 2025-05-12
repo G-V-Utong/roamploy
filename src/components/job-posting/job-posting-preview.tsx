@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+// import Image from "next/image"
 import { MapPin, Clock, DollarSign, Building, Calendar } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { formatRelativeDate } from "@/lib/utils"
 
 interface JobPostingPreviewProps {
   job: any
@@ -11,6 +13,8 @@ interface JobPostingPreviewProps {
 export default function JobPostingPreview({ job }: JobPostingPreviewProps) {
   // Format salary display
   const formatSalary = () => {
+    if (!job.salaryMin && !job.salaryMax) return 'Salary not specified'
+
     const currency =
       job.salaryCurrency === "USD"
         ? "$"
@@ -35,7 +39,15 @@ export default function JobPostingPreview({ job }: JobPostingPreviewProps) {
             ? "per hour"
             : ""
 
-    return `${currency}${job.salaryMin} - ${currency}${job.salaryMax} ${period}`
+    if (job.salaryMin && job.salaryMax) {
+      return `${currency}${job.salaryMin} - ${currency}${job.salaryMax} ${period}`
+    } else if (job.salaryMin) {
+      return `From ${currency}${job.salaryMin} ${period}`
+    } else if (job.salaryMax) {
+      return `Up to ${currency}${job.salaryMax} ${period}`
+    } else {
+      return 'Salary not specified'
+    }
   }
 
   return (
@@ -43,8 +55,13 @@ export default function JobPostingPreview({ job }: JobPostingPreviewProps) {
       <div className="bg-muted p-6 rounded-lg">
         <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
           <div className="flex gap-4">
-            <div className="relative h-16 w-16 overflow-hidden rounded-md bg-background flex items-center justify-center">
-              <span className="text-xl font-bold">{job.companyName.charAt(0)}</span>
+            <div className="relative h-16 w-16 overflow-hidden rounded-md bg-background">
+              <img
+                src={`https://logo.clearbit.com/${job.companyWebsite}` || "/images/companyLogo.jpg"}
+                alt={`${job.companyName} logo`}
+
+                className="object-cover"
+              />
             </div>
             <div>
               <h1 className="text-2xl font-bold">{job.title}</h1>
@@ -92,7 +109,7 @@ export default function JobPostingPreview({ job }: JobPostingPreviewProps) {
           <CardContent className="p-4 flex flex-col items-center justify-center text-center">
             <Calendar className="h-5 w-5 mb-2 text-muted-foreground" />
             <h3 className="text-sm font-medium">Posted</h3>
-            <p className="text-sm">Today</p>
+            <p className="text-sm">{formatRelativeDate(job.posted_date || new Date())}</p>
           </CardContent>
         </Card>
       </div>
@@ -162,7 +179,7 @@ export default function JobPostingPreview({ job }: JobPostingPreviewProps) {
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Application Email</span>
-            <span className="font-medium">{job.applicationEmail}</span>
+            <span className="font-medium">{job.applicationemail}</span>
           </div>
           {job.applicationUrl && (
             <div className="flex justify-between text-sm">

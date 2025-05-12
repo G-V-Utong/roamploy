@@ -2,9 +2,9 @@ export interface JobType {
     id: string
     title: string
     companyName: string
-    companyLogo: string
+    companyLogo?: string  // Optional company logo URL
     location: string
-    jobType: string
+    job_type: string
     salary: string
     experience: string
     description: string
@@ -14,9 +14,14 @@ export interface JobType {
     skills: string[]
     postedDate: string
     companyDescription: string
-    companyWebsite: string
+    company_website: string
     companyIndustry: string
     companySize: string
+    created_at: string
+    updated_at: string
+    salary_min: string
+    salary_max: string
+    salary_currency: string
   }
   
   // Resume Types
@@ -105,4 +110,3 @@ export interface JobType {
     projects: Projects
     certifications: Certifications
   }
-  

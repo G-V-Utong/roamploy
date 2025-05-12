@@ -37,10 +37,9 @@ export default async function JobPage({ params, searchParams }: PageProps) {
               <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
                 <div className="flex gap-4">
                   <div className="relative h-16 w-16 overflow-hidden rounded-md">
-                    <Image
+                    <img
                       src={job.companyLogo || "/placeholder.svg"}
                       alt={job.companyName}
-                      fill
                       className="object-cover"
                     />
                   </div>

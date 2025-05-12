@@ -12,6 +12,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { ChevronRight, Plus, X } from "lucide-react"
+import { toast } from "sonner"
 
 const jobPostingSchema = z.object({
   // Job Details
@@ -19,10 +20,10 @@ const jobPostingSchema = z.object({
   jobType: z.string().min(1, "Please select a job type"),
   experienceLevel: z.string().min(1, "Please select an experience level"),
   location: z.string().min(1, "Please specify the job location"),
-  salaryMin: z.string().min(1, "Please enter a minimum salary"),
-  salaryMax: z.string().min(1, "Please enter a maximum salary"),
-  salaryCurrency: z.string().min(1, "Please select a currency"),
-  salaryPeriod: z.string().min(1, "Please select a salary period"),
+  salaryMin: z.string().optional(),
+  salaryMax: z.string().optional(),
+  salaryCurrency: z.string().optional(),
+  salaryPeriod: z.string().optional(),
 
   // Job Description
   description: z.string().min(100, "Job description must be at least 100 characters"),
@@ -33,13 +34,14 @@ const jobPostingSchema = z.object({
 
   // Company Details
   companyName: z.string().min(2, "Company name must be at least 2 characters"),
+  companyLogo: z.string().url("Please enter a valid URL").optional().or(z.literal("")),
   companyWebsite: z.string().url("Please enter a valid URL"),
   companyDescription: z.string().min(50, "Company description must be at least 50 characters"),
   companyIndustry: z.string().min(2, "Please specify the company industry"),
   companySize: z.string().min(1, "Please select the company size"),
 
   // Application Details
-  applicationEmail: z.string().email("Please enter a valid email"),
+  applicationemail: z.string().email("Please enter a valid email").optional().or(z.literal("")),
   applicationUrl: z.string().url("Please enter a valid URL").optional().or(z.literal("")),
   applicationInstructions: z.string().optional(),
 
@@ -80,13 +82,14 @@ export default function JobPostingForm({ onSubmit, initialData }: JobPostingForm
 
     // Company Details
     companyName: "",
+    companyLogo: "",
     companyWebsite: "",
     companyDescription: "",
     companyIndustry: "",
     companySize: "",
 
     // Application Details
-    applicationEmail: "",
+    applicationemail: "",
     applicationUrl: "",
     applicationInstructions: "",
 
@@ -110,8 +113,18 @@ export default function JobPostingForm({ onSubmit, initialData }: JobPostingForm
     setCurrentStep((prev) => Math.max(prev - 1, 1))
   }
 
-  const handleSubmit = (data: JobPostingFormValues) => {
-    onSubmit(data)
+  const handleSubmit = async (data: JobPostingFormValues) => {
+    // Validate all fields before submitting
+    try {
+      const result = jobPostingSchema.parse(data);
+      onSubmit(result);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        error.errors.forEach(issue => {
+          toast.error(`${issue.path.join('.')}: ${issue.message}`);
+        });
+      }
+    }
   }
 
   const addListItem = (fieldName: "responsibilities" | "requirements" | "benefits" | "skills") => {
@@ -218,17 +231,18 @@ export default function JobPostingForm({ onSubmit, initialData }: JobPostingForm
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-lg font-medium">Salary Range</h3>
+              <h3 className="text-lg font-medium">Salary Range (Optional)</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
                   name="salaryMin"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Minimum Salary*</FormLabel>
+                      <FormLabel>Minimum Salary (Optional)</FormLabel>
                       <FormControl>
                         <Input type="number" placeholder="e.g. 50000" {...field} />
                       </FormControl>
+                      <FormDescription>Leave blank if you prefer not to disclose</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -239,10 +253,11 @@ export default function JobPostingForm({ onSubmit, initialData }: JobPostingForm
                   name="salaryMax"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Maximum Salary*</FormLabel>
+                      <FormLabel>Maximum Salary (Optional)</FormLabel>
                       <FormControl>
                         <Input type="number" placeholder="e.g. 80000" {...field} />
                       </FormControl>
+                      <FormDescription>Leave blank if you prefer not to disclose</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -255,7 +270,7 @@ export default function JobPostingForm({ onSubmit, initialData }: JobPostingForm
                   name="salaryCurrency"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Currency*</FormLabel>
+                      <FormLabel>Currency</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
@@ -263,6 +278,7 @@ export default function JobPostingForm({ onSubmit, initialData }: JobPostingForm
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
+                          <SelectItem value="NGN">NGN (₦)</SelectItem>
                           <SelectItem value="USD">USD ($)</SelectItem>
                           <SelectItem value="EUR">EUR (€)</SelectItem>
                           <SelectItem value="GBP">GBP (£)</SelectItem>
@@ -280,7 +296,7 @@ export default function JobPostingForm({ onSubmit, initialData }: JobPostingForm
                   name="salaryPeriod"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Salary Period*</FormLabel>
+                      <FormLabel>Salary Period</FormLabel>
                       <RadioGroup
                         onValueChange={field.onChange}
                         defaultValue={field.value}
@@ -550,6 +566,23 @@ export default function JobPostingForm({ onSubmit, initialData }: JobPostingForm
 
               <FormField
                 control={form.control}
+                name="companyLogo"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Company Logo URL (Optional)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g. https://www.example.com/logo.png" {...field} />
+                    </FormControl>
+                    <FormDescription>Provide a URL to your company logo (optional)</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField
+                control={form.control}
                 name="companyWebsite"
                 render={({ field }) => (
                   <FormItem>
@@ -630,14 +663,14 @@ export default function JobPostingForm({ onSubmit, initialData }: JobPostingForm
           <div className="space-y-6">
             <FormField
               control={form.control}
-              name="applicationEmail"
+              name="applicationemail"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Application Email*</FormLabel>
+                  <FormLabel>Application Email (Optional)</FormLabel>
                   <FormControl>
                     <Input placeholder="e.g. jobs@example.com" {...field} />
                   </FormControl>
-                  <FormDescription>Email where applications will be sent</FormDescription>
+                  <FormDescription>Email where applications will be sent (optional)</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -690,7 +723,9 @@ export default function JobPostingForm({ onSubmit, initialData }: JobPostingForm
               Next Step <ChevronRight className="ml-1 h-4 w-4" />
             </Button>
           ) : (
-            <Button type="submit">Preview Job Posting</Button>
+            <Button type="submit" className="flex items-center">
+              Preview Job Posting <ChevronRight className="ml-1 h-4 w-4" />
+            </Button>
           )}
         </div>
       </form>
