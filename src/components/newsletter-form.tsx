@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
 import type React from "react"
@@ -6,6 +7,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
+import { supabase } from "@/lib/supabase"
 
 interface NewsletterFormProps {
   onSuccess?: () => void
@@ -19,17 +21,29 @@ export default function NewsletterForm({ onSuccess }: NewsletterFormProps) {
     e.preventDefault()
     setLoading(true)
 
-    // Simulate API call
-    setTimeout(() => {
-      toast.success("You've been subscribed to our newsletter.")
-      setEmail("")
-      setLoading(false)
+    try {
+      const { error } = await supabase
+        .from('newsletter_subscribers')
+        .insert([{ email }])
 
-      // Call onSuccess callback if provided
-      if (onSuccess) {
-        onSuccess()
+      if (error) {
+        if (error.code === '23505') {
+          toast.error('You are already subscribed to our newsletter')
+        } else {
+          toast.error('Failed to subscribe. Please try again.')
+        }
+      } else {
+        toast.success("You've been subscribed to our newsletter.")
+        setEmail("")
+        if (onSuccess) {
+          onSuccess()
+        }
       }
-    }, 1000)
+    } catch (_error) {
+      toast.error('An error occurred. Please try again.')
+    }
+
+    setLoading(false)
   }
 
   return (
