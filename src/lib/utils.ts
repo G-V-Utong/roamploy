@@ -5,6 +5,13 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export function capitalizeJobType(jobType: string) {
+  // Split by hyphen or space and capitalize each word
+  return jobType?.split(/[-\s]/)
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ')
+}
+
 export function formatRelativeDate(date: string | Date) {
   const now = new Date()
   const postedDate = new Date(date)

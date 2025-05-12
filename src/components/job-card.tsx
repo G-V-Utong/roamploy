@@ -5,13 +5,73 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import type { JobType } from "@/lib/types"
-import { formatRelativeDate } from "@/lib/utils"
+import { formatRelativeDate, capitalizeJobType } from "@/lib/utils"
+import { useAuth } from "@/components/auth/auth-context"
+import { useState, useEffect } from "react"
+import { supabase } from "@/lib/supabase"
+import { toast } from "sonner"
 
 interface JobCardProps {
   job: JobType
 }
 
 export default function JobCard({ job }: JobCardProps) {
+  const { user } = useAuth()
+  const [isSaved, setIsSaved] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+
+  useEffect(() => {
+    // Check if job is saved when component mounts
+    const checkSavedStatus = async () => {
+      if (!user) return
+      
+      const { data } = await supabase
+        .from('saved_jobs')
+        .select('id')
+        .eq('job_id', job.id)
+        .eq('user_id', user.id)
+        .single()
+      
+      setIsSaved(!!data)
+    }
+
+    checkSavedStatus()
+  }, [job.id, user])
+
+  const toggleSave = async () => {
+    if (!user) {
+      toast.error('Please sign in to save jobs')
+      return
+    }
+
+    setIsLoading(true)
+    try {
+      if (isSaved) {
+        const { error } = await supabase
+          .from('saved_jobs')
+          .delete()
+          .eq('job_id', job.id)
+          .eq('user_id', user.id)
+
+        if (error) throw error
+        toast.success('Job removed from saved jobs')
+      } else {
+        const { error } = await supabase
+          .from('saved_jobs')
+          .insert({ job_id: job.id, user_id: user.id })
+
+        if (error) throw error
+        toast.success('Job saved successfully')
+      }
+      setIsSaved(!isSaved)
+    } catch (error) {
+      toast.error('Failed to save job')
+      console.error('Error toggling job save:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <Card className="overflow-hidden">
       <CardContent className="p-0">
@@ -41,9 +101,19 @@ export default function JobCard({ job }: JobCardProps) {
                 </div>
               </div>
             </div>
-            <Button variant="ghost" size="icon" className="h-8 w-8">
-              <Bookmark className="h-4 w-4" />
-              <span className="sr-only">Save job</span>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-8 w-8"
+              onClick={toggleSave}
+              disabled={isLoading}
+            >
+              <Bookmark 
+                className={`h-4 w-4 ${isSaved ? 'fill-current' : ''}`} 
+              />
+              <span className="sr-only">
+                {isSaved ? 'Unsave job' : 'Save job'}
+              </span>
             </Button>
           </div>
           <div className="mt-4 flex flex-wrap gap-2">
@@ -56,7 +126,7 @@ export default function JobCard({ job }: JobCardProps) {
           <div className="mt-4 flex flex-wrap gap-4 text-sm text-muted-foreground">
             <div className="flex items-center">
               <Clock className="mr-1 h-4 w-4" />
-              {job.job_type}
+              {capitalizeJobType(job.job_type)}
             </div>
             <div className="flex items-center">
               <DollarSign className="mr-1 h-4 w-4" />

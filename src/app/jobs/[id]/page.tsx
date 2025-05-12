@@ -2,25 +2,49 @@
 import { notFound } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowLeft, MapPin, Clock, DollarSign, Building, Calendar, Share2, Bookmark } from "lucide-react"
-import { jobsData } from "@/lib/data"
+import { ArrowLeft, MapPin, Clock, DollarSign, Building, Calendar, Share2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import NewsletterForm from "@/components/newsletter-form"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
+import SaveJobButton from "@/components/save-job-button"
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+import { cookies } from 'next/headers'
+import { formatRelativeDate, capitalizeJobType } from "@/lib/utils"
 
 interface PageProps {
-  params: Promise<{ id: string }>
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }> 
+  params: { id: string }
+  searchParams: { [key: string]: string | string[] | undefined }
 }
 
 export default async function JobPage({ params, searchParams }: PageProps) {
-  const resolvedParams = await params;
-  const job = jobsData.find((job) => job.id === resolvedParams.id)
+  const supabase = createServerComponentClient({ cookies })
+  
+  // Fetch job from Supabase
+  const { data: job, error } = await supabase
+    .from('jobs')
+    .select('*')
+    .eq('id', params.id)
+    .single()
 
-  if (!job) return notFound()
+  if (error || !job) return notFound()
+
+  // Get user's session to check if job is saved
+  const { data: { session } } = await supabase.auth.getSession()
+  let isSaved = false
+  
+  if (session?.user) {
+    const { data: savedJob } = await supabase
+      .from('saved_jobs')
+      .select('id')
+      .eq('job_id', params.id)
+      .eq('user_id', session.user.id)
+      .single()
+    
+    isSaved = !!savedJob
+  }
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -38,15 +62,15 @@ export default async function JobPage({ params, searchParams }: PageProps) {
                 <div className="flex gap-4">
                   <div className="relative h-16 w-16 overflow-hidden rounded-md">
                     <img
-                      src={job.companyLogo || "/placeholder.svg"}
-                      alt={job.companyName}
+                      src={`https://logo.clearbit.com/${job.company_website}` || "/images/companyLogo.jpg"}
+                      alt={job.company_name}
                       className="object-cover"
                     />
                   </div>
                   <div>
                     <h1 className="text-2xl font-bold">{job.title}</h1>
                     <div className="flex items-center gap-2 text-muted-foreground">
-                      <span>{job.companyName}</span>
+                      <span>{job.company_name}</span>
                       <span>•</span>
                       <div className="flex items-center">
                         <MapPin className="mr-1 h-3 w-3" />
@@ -59,9 +83,10 @@ export default async function JobPage({ params, searchParams }: PageProps) {
                   <Button variant="outline" size="icon">
                     <Share2 className="h-4 w-4" />
                   </Button>
-                  <Button variant="outline" size="icon">
-                    <Bookmark className="h-4 w-4" />
-                  </Button>
+                  <SaveJobButton 
+                    jobId={job.id} 
+                    initialSavedState={isSaved}
+                  />
                   <Button>
                     Apply Now
                   </Button>
@@ -73,14 +98,14 @@ export default async function JobPage({ params, searchParams }: PageProps) {
                   <CardContent className="p-4 flex flex-col items-center justify-center text-center">
                     <Clock className="h-5 w-5 mb-2 text-muted-foreground" />
                     <h3 className="text-sm font-medium">Job Type</h3>
-                    <p className="text-sm">{job.jobType}</p>
+                    <p className="text-sm">{capitalizeJobType(job.job_type)}</p>
                   </CardContent>
                 </Card>
                 <Card>
                   <CardContent className="p-4 flex flex-col items-center justify-center text-center">
                     <DollarSign className="h-5 w-5 mb-2 text-muted-foreground" />
                     <h3 className="text-sm font-medium">Salary</h3>
-                    <p className="text-sm">{job.salary}</p>
+                    <p className="text-sm">{job.salary_min || job.salary_max ? `${job.salary_min} - ${job.salary_max} ${job.salary_currency} ` : "Not specified"}</p>
                   </CardContent>
                 </Card>
                 <Card>
@@ -94,7 +119,7 @@ export default async function JobPage({ params, searchParams }: PageProps) {
                   <CardContent className="p-4 flex flex-col items-center justify-center text-center">
                     <Calendar className="h-5 w-5 mb-2 text-muted-foreground" />
                     <h3 className="text-sm font-medium">Posted</h3>
-                    <p className="text-sm">{job.postedDate}</p>
+                    <p className="text-sm">{formatRelativeDate(job.posted_date)}</p>
                   </CardContent>
                 </Card>
               </div>
@@ -105,19 +130,19 @@ export default async function JobPage({ params, searchParams }: PageProps) {
                   <p>{job.description}</p>
                   <h3>Responsibilities:</h3>
                   <ul>
-                    {job.responsibilities.map((item, index) => (
+                    {job.responsibilities.map((item: string, index: number) => (
                       <li key={index}>{item}</li>
                     ))}
                   </ul>
                   <h3>Requirements:</h3>
                   <ul>
-                    {job.requirements.map((item, index) => (
+                    {job.requirements.map((item: string, index: number) => (
                       <li key={index}>{item}</li>
                     ))}
                   </ul>
                   <h3>Benefits:</h3>
                   <ul>
-                    {job.benefits.map((item, index) => (
+                    {job.benefits.map((item: string, index: number) => (
                       <li key={index}>{item}</li>
                     ))}
                   </ul>
@@ -126,7 +151,7 @@ export default async function JobPage({ params, searchParams }: PageProps) {
 
               <div className="flex flex-wrap gap-2">
                 <h2 className="text-xl font-semibold w-full mb-2">Skills</h2>
-                {job.skills.map((skill, index) => (
+                {job.skills.map((skill: string, index: number) => (
                   <Badge key={index} variant="secondary" className="text-sm">
                     {skill}
                   </Badge>
@@ -143,22 +168,22 @@ export default async function JobPage({ params, searchParams }: PageProps) {
             <div className="space-y-6">
               <Card>
                 <CardContent className="p-6">
-                  <h3 className="text-lg font-semibold mb-4">About {job.companyName}</h3>
-                  <p className="text-sm text-muted-foreground mb-4">{job.companyDescription}</p>
+                  <h3 className="text-lg font-semibold mb-4">About {job.company_name}</h3>
+                  <p className="text-sm text-muted-foreground mb-4">{job.company_description}</p>
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Website</span>
-                      <Link href="#" className="font-medium hover:underline">
-                        {job.companyWebsite}
+                      <Link href={`https://${job.company_website}`} className="font-medium hover:underline">
+                        {job.company_website}
                       </Link>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Industry</span>
-                      <span>{job.companyIndustry}</span>
+                      <span>{job.company_industry}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Company size</span>
-                      <span>{job.companySize}</span>
+                      <span>{job.company_size}</span>
                     </div>
                   </div>
                   <div className="mt-4">
