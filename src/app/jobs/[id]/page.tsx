@@ -1,49 +1,26 @@
-"use client"
-
-import { useState } from "react"
-import Link from "next/link"
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { notFound } from "next/navigation"
 import Image from "next/image"
+import Link from "next/link"
 import { ArrowLeft, MapPin, Clock, DollarSign, Building, Calendar, Share2, Bookmark } from "lucide-react"
+import { jobsData } from "@/lib/data"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
-import { jobsData } from "@/lib/data"
 import NewsletterForm from "@/components/newsletter-form"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
-import { useAuth } from "@/components/auth/auth-context"
-import { toast } from "sonner"
-import { useRouter } from "next/navigation"
 
-interface JobPageProps {
-  params: {
-    id: string
-  }
+interface PageProps {
+  params: Promise<{ id: string }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }> 
 }
 
-export default function JobPage({ params }: JobPageProps) {
-  const { user } = useAuth()
-  const router = useRouter()
-  const [isApplying, setIsApplying] = useState(false)
+export default async function JobPage({ params, searchParams }: PageProps) {
+  const resolvedParams = await params;
+  const job = jobsData.find((job) => job.id === resolvedParams.id)
 
-  // In a real app, you would fetch this data from an API
-  const job = jobsData.find((job) => job.id === params.id) || jobsData[0]
-
-  const handleApply = () => {
-    if (!user) {
-      toast.error("Please sign in to apply for this job")
-      router.push("/signin")
-      return
-    }
-
-    setIsApplying(true)
-
-    // Simulate API call
-    setTimeout(() => {
-      toast.success("Your application has been sent to the employer.")
-      setIsApplying(false)
-    }, 1500)
-  }
+  if (!job) return notFound()
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -86,8 +63,8 @@ export default function JobPage({ params }: JobPageProps) {
                   <Button variant="outline" size="icon">
                     <Bookmark className="h-4 w-4" />
                   </Button>
-                  <Button onClick={handleApply} disabled={isApplying}>
-                    {isApplying ? "Applying..." : "Apply Now"}
+                  <Button>
+                    Apply Now
                   </Button>
                 </div>
               </div>
@@ -158,8 +135,8 @@ export default function JobPage({ params }: JobPageProps) {
               </div>
 
               <div className="pt-4 border-t">
-                <Button size="lg" className="w-full md:w-auto" onClick={handleApply} disabled={isApplying}>
-                  {isApplying ? "Submitting application..." : "Apply for this position"}
+                <Button size="lg" className="w-full md:w-auto">
+                  Apply for this position
                 </Button>
               </div>
             </div>
@@ -192,42 +169,11 @@ export default function JobPage({ params }: JobPageProps) {
                   </div>
                 </CardContent>
               </Card>
-
-              <Card>
-                <CardContent className="p-6">
-                  <h3 className="text-lg font-semibold mb-4">Similar Jobs</h3>
-                  <div className="space-y-4">
-                    {jobsData.slice(0, 3).map((similarJob) => (
-                      <div key={similarJob.id} className="border-b pb-4 last:border-0 last:pb-0">
-                        <h4 className="font-medium hover:underline">
-                          <Link href={`/jobs/${similarJob.id}`}>{similarJob.title}</Link>
-                        </h4>
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
-                          <span>{similarJob.companyName}</span>
-                          <span>•</span>
-                          <span>{similarJob.location}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
             </div>
           </div>
         </div>
-
-        <section className="bg-muted py-12">
-          <div className="container m-auto px-4 md:px-6">
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-2xl font-bold mb-4">Never Miss a Remote Opportunity</h2>
-              <p className="text-muted-foreground mb-6">
-                Get personalized job alerts delivered straight to your inbox.
-              </p>
-              <NewsletterForm />
-            </div>
-          </div>
-        </section>
       </main>
+      <NewsletterForm />
       <Footer />
     </div>
   )
