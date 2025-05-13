@@ -5,9 +5,15 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import JobCard from "@/components/job-card"
 import NewsletterForm from "@/components/newsletter-form"
-import { jobsData } from "@/lib/data"
+import { supabase } from "@/lib/supabase"
 
-export default function HomePage() {
+export default async function HomePage() {
+  const { data: jobs } = await supabase
+    .from('jobs')
+    .select('*')
+    .order('posted_date', { ascending: false })
+  
+  
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
@@ -185,9 +191,13 @@ export default function HomePage() {
                   </div>
                 </div>
                 <div className="space-y-4">
-                  {jobsData.map((job) => (
+                  {jobs?.map((job) => (
                     <JobCard key={job.id} job={job} />
-                  ))}
+                  )) ?? (
+                    <div className="text-center text-muted-foreground py-8">
+                      No jobs found
+                    </div>
+                  )}
                 </div>
                 <div className="mt-8 flex justify-center">
                   <Button variant="outline" className="mx-auto">

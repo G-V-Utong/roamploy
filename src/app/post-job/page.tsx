@@ -14,6 +14,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Loader2 } from "lucide-react"
+import { supabase } from "@/lib/supabase"
 
 export default function PostJobPage() {
   const { user, isLoading } = useAuth()
@@ -40,17 +41,70 @@ export default function PostJobPage() {
   }
 
   const handlePublish = async () => {
+    if (!formData || !user) return
     setIsSubmitting(true)
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      // Convert camelCase keys to lowercase for database compatibility
+      const dbFormattedData = {
+        ...formData,
+        applicationemail: formData.applicationEmail,
+        application_instructions: formData.applicationInstructions,
+        application_url: formData.applicationUrl,
+        company_description: formData.companyDescription,
+        company_name: formData.companyName,
+        company_website: formData.companyWebsite,
+        company_industry: formData.companyIndustry,
+        company_logo: formData.companyLogo,
+        company_size: formData.companySize,
+        company_location: formData.company_Location,
+        company_type: formData.companyType,
+        experience: formData.experienceLevel,
+        is_featured: formData.isFeatured,
+        is_remote: formData.isRemote,
+        is_urgent: formData.isUrgent,
+        salary_currency: formData.salaryCurrency,
+        salary_min: formData.salaryMin,
+        salary_max: formData.salaryMax,
+        salary_period: formData.salaryPeriod,
+        job_type: formData.jobType.toLowerCase().replace(' ', '-'),
+        user_id: user.id,
+        posted_date: new Date().toISOString()
+      }
+      // Remove the camelCase version
+      delete dbFormattedData.applicationEmail;
+      delete dbFormattedData.applicationInstructions;
+      delete dbFormattedData.applicationUrl;
+      delete dbFormattedData.companyDescription;
+      delete dbFormattedData.companyName;
+      delete dbFormattedData.companyWebsite;
+      delete dbFormattedData.companyIndustry;
+      delete dbFormattedData.companyLogo;
+      delete dbFormattedData.companySize;
+      delete dbFormattedData.company_Location;
+      delete dbFormattedData.companyType;
+      delete dbFormattedData.experienceLevel;
+      delete dbFormattedData.isFeatured;
+      delete dbFormattedData.isRemote;
+      delete dbFormattedData.isUrgent;
+      delete dbFormattedData.jobType;
+      delete dbFormattedData.salaryCurrency;
+      delete dbFormattedData.salaryMin;
+      delete dbFormattedData.salaryMax;
+      delete dbFormattedData.salaryPeriod;
+
+
+      const { error } = await supabase
+        .from('jobs')
+        .insert([dbFormattedData])
+
+      if (error) throw error
 
       toast.success("Your job listing has been published.")
-
       router.push("/dashboard")
     } catch (error) {
-      toast.error("Failed to post job. Please try again.")
+      toast.error("Failed to publish job listing. Please try again.")
+      console.error('Error publishing job:', error)
     } finally {
       setIsSubmitting(false)
     }

@@ -9,7 +9,7 @@ CREATE TABLE jobs (
   company_logo TEXT,
   location TEXT NOT NULL,
   job_type job_type_enum NOT NULL,
-  salary TEXT NOT NULL,
+  salary TEXT, -- Removed NOT NULL constraint
   experience TEXT NOT NULL,
   description TEXT NOT NULL,
   responsibilities TEXT[] NOT NULL DEFAULT '{}',
@@ -21,6 +21,7 @@ CREATE TABLE jobs (
   company_website TEXT,
   company_industry TEXT NOT NULL,
   company_size TEXT NOT NULL,
+  applicationemail TEXT,
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP

@@ -2,11 +2,20 @@ import { Search, Filter } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import JobCard from "@/components/job-card"
-import { jobsData } from "@/lib/data"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+import { cookies } from 'next/headers'
 
-export default function JobsPage() {
+export default async function JobsPage() {
+  const supabase = createServerComponentClient({ cookies })
+  
+  // Fetch jobs from Supabase
+  const { data: jobs } = await supabase
+    .from('jobs')
+    .select('*')
+    .order('posted_date', { ascending: false })
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
@@ -150,9 +159,13 @@ export default function JobsPage() {
                 </div>
               </div>
               <div className="space-y-4">
-                {jobsData.map((job) => (
+                {jobs?.map((job) => (
                   <JobCard key={job.id} job={job} />
-                ))}
+                )) ?? (
+                  <div className="text-center text-muted-foreground py-8">
+                    No jobs found
+                  </div>
+                )}
               </div>
               <div className="mt-8 flex justify-center">
                 <div className="flex gap-2">
