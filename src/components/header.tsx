@@ -17,6 +17,7 @@ import { ThemeToggle } from "@/components/theme-toggle"
 
 export default function Header() {
   const { user, signOut } = useAuth()
+  const isAdmin = user?.email === `${process.env.NEXT_PUBLIC_ADMIN_EMAIL}`
 
   return (
     <header className="sticky top-0 z-40 border-b bg-background">
@@ -101,9 +102,11 @@ export default function Header() {
         <div className="flex items-center gap-4">
           <ThemeToggle />
 
-          <Link href="/post-job">
-            <Button>Post a Job</Button>
-          </Link>
+          {isAdmin && (
+            <Link href="/post-job">
+              <Button>Post a Job</Button>
+            </Link>
+          )}
 
           {user ? (
             <DropdownMenu>
