@@ -112,12 +112,34 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @layer base {
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
+  }
+  .prose {
+    @apply max-w-none;
+  }
+  .prose h2 {
+    @apply text-2xl font-semibold mt-8 mb-4;
+  }
+  .prose h3 {
+    @apply text-xl font-semibold mt-6 mb-3;
+  }
+  .prose p {
+    @apply mb-4;
+  }
+  .prose ul {
+    @apply mb-4 list-disc list-inside;
+  }
+  .prose li {
+    @apply mb-2;
   }
   .font-dancing-script {
     font-family: var(--font-dancing-script), cursive;

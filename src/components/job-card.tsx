@@ -74,14 +74,14 @@ export default function JobCard({ job }: JobCardProps) {
 
   return (
     <Card className="overflow-hidden">
-      <CardContent className="p-0">
-        <div className="p-6">
+      <CardContent className="p-6">
+        <div className="space-y-4">
           <div className="flex items-start justify-between">
             <div className="flex gap-4">
               <div className="relative h-12 w-12 overflow-hidden rounded-md bg-background">
                 <img
                   src={`https://logo.clearbit.com/${job.company_website}` || "/images/companyLogo.jpg"}
-                  alt={`${job.companyName} logo`}
+                  alt={`${job.company_name} logo`}
                   className="object-cover"
                 />
               </div>
@@ -92,7 +92,7 @@ export default function JobCard({ job }: JobCardProps) {
                   </Link>
                 </h3>
                 <div className="flex items-center gap-2 text-muted-foreground text-sm">
-                  <span>{job.companyName}</span>
+                  <span>{job.company_name}</span>
                   <span>•</span>
                   <div className="flex items-center">
                     <MapPin className="mr-1 h-3 w-3" />
@@ -116,14 +116,19 @@ export default function JobCard({ job }: JobCardProps) {
               </span>
             </Button>
           </div>
-          <div className="mt-4 flex flex-wrap gap-2">
-            {job.skills.map((skill, index) => (
+
+          <div className="flex flex-wrap gap-2">
+            {job.skills.slice(0, 4).map((skill, index) => (
               <Badge key={index} variant="secondary">
                 {skill}
               </Badge>
             ))}
+            {job.skills.length > 4 && (
+              <Badge variant="outline">+{job.skills.length - 4} more</Badge>
+            )}
           </div>
-          <div className="mt-4 flex flex-wrap gap-4 text-sm text-muted-foreground">
+
+          <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
             <div className="flex items-center">
               <Clock className="mr-1 h-4 w-4" />
               {capitalizeJobType(job.job_type)}
@@ -133,9 +138,11 @@ export default function JobCard({ job }: JobCardProps) {
               {job.salary_min || job.salary_max ? `${job.salary_min} - ${job.salary_max} ${job.salary_currency} ` : "Not specified"}
             </div>
           </div>
-          <p className="mt-4 text-sm line-clamp-2">{job.description}</p>
+
+          <p className="text-sm text-muted-foreground line-clamp-2">{job.description}</p>
         </div>
-        <div className="flex items-center justify-between bg-muted p-4">
+
+        <div className="flex items-center justify-between mt-6 pt-6 border-t">
           <span className="text-sm text-muted-foreground">
             Posted {formatRelativeDate(job.created_at)}
           </span>

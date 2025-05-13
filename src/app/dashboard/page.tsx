@@ -9,9 +9,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useAuth } from "@/components/auth/auth-context"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
-import { jobsData } from "@/lib/data"
 import { supabase } from "@/lib/supabase"
-import { capitalizeJobType } from "@/lib/utils"
+// import { capitalizeJobType } from "@/lib/utils"
 import type { JobType } from "@/lib/types"
 
 interface SavedJobRecord {
@@ -126,7 +125,7 @@ export default function DashboardPage() {
             </div>
 
             <div className="grid gap-6 md:grid-cols-2">
-              <Card className="md:col-span-1">
+              {/* <Card className="md:col-span-1">
                 <CardHeader>
                   <CardTitle>Recent Applications</CardTitle>
                   <CardDescription>Track your recent job applications</CardDescription>
@@ -137,7 +136,7 @@ export default function DashboardPage() {
                       <div key={job.id} className="flex items-start gap-4 border-b pb-4 last:border-0 last:pb-0">
                         <div className="flex-1">
                           <h3 className="font-medium">{job.title}</h3>
-                          <div className="text-sm text-muted-foreground">{job.companyName}</div>
+                          <div className="text-sm text-muted-foreground">{job.company_name}</div>
                           <div className="text-sm">Applied on May 2, 2025</div>
                         </div>
                         <div className="text-sm font-medium text-yellow-500">In Review</div>
@@ -152,7 +151,7 @@ export default function DashboardPage() {
                     </Link>
                   </div>
                 </CardContent>
-              </Card>
+              </Card> */}
 
               <Card className="md:col-span-1">
                 <CardHeader>
@@ -168,7 +167,7 @@ export default function DashboardPage() {
                         <div key={job.id} className="flex items-start gap-4 border-b pb-4 last:border-0 last:pb-0">
                           <div className="flex-1">
                             <h3 className="font-medium">{job.title}</h3>
-                            <div className="text-sm text-muted-foreground">{job.companyName}</div>
+                            <div className="text-sm text-muted-foreground">{job.company_name}</div>
                             <div className="text-sm">{job.location}</div>
                           </div>
                           <div className="flex gap-2">
@@ -240,7 +239,7 @@ export default function DashboardPage() {
                 </CardContent>
               </Card>
 
-              <Card className="md:col-span-3">
+              {/* <Card className="md:col-span-3">
                 <CardHeader>
                   <CardTitle>Recommended Jobs</CardTitle>
                   <CardDescription>Based on your profile and preferences</CardDescription>
@@ -251,7 +250,7 @@ export default function DashboardPage() {
                       <div key={job.id} className="flex items-start gap-4 border-b pb-4 last:border-0 last:pb-0">
                         <div className="flex-1">
                           <h3 className="font-medium">{job.title}</h3>
-                          <div className="text-sm text-muted-foreground">{job.companyName}</div>
+                          <div className="text-sm text-muted-foreground">{job.company_name}</div>
                           <div className="flex flex-wrap gap-2 mt-1">
                             <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold">
                               {job.location}
@@ -277,7 +276,7 @@ export default function DashboardPage() {
                     </Link>
                   </div>
                 </CardContent>
-              </Card>
+              </Card> */}
             </div>
           </div>
         </div>

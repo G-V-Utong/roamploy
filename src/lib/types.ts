@@ -1,7 +1,7 @@
 export interface JobType {
     id: string
     title: string
-    companyName: string
+    company_name: string
     companyLogo?: string  // Optional company logo URL
     location: string
     job_type: string

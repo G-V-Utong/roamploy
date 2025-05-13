@@ -35,7 +35,7 @@ const jobPostingSchema = z.object({
   // Company Details
   companyName: z.string().min(2, "Company name must be at least 2 characters"),
   companyLogo: z.string().url("Please enter a valid URL").optional().or(z.literal("")),
-  companyWebsite: z.string().url("Please enter a valid URL"),
+  companyWebsite: z.string(),
   companyDescription: z.string().min(50, "Company description must be at least 50 characters"),
   companyIndustry: z.string().min(2, "Please specify the company industry"),
   companySize: z.string().min(1, "Please select the company size"),
