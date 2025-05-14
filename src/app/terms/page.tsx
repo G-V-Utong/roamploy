@@ -113,7 +113,7 @@ const Terms = () => {
                 </h2>
                 <p className="leading-relaxed">
                   By using Roamploy, you agree to comply with these terms and
-                  conditions ("Terms"), which form a legally binding agreement
+                  conditions (&quot;Terms&quot;), which form a legally binding agreement
                   governing your access to and use of our services. If you do
                   not agree with these Terms, you may not use the platform.
                 </p>
