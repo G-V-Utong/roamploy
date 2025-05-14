@@ -12,21 +12,21 @@ CREATE TABLE resumes (
 ALTER TABLE resumes ENABLE ROW LEVEL SECURITY;
 
 -- Create policies
--- Policy for viewing resumes (only owner can view)
+-- Policy: only the resume owner can view
 CREATE POLICY "Users can view their own resumes" ON resumes
-  FOR SELECT USING (auth.uid() = user_id);
+  FOR SELECT USING ((SELECT auth.uid()) = user_id);
 
--- Policy for creating resumes (authenticated users only, one per user)
+-- Policy: only authenticated users can create their own resume
 CREATE POLICY "Users can create their own resume" ON resumes
-  FOR INSERT WITH CHECK (auth.uid() = user_id);
+  FOR INSERT WITH CHECK ((SELECT auth.uid()) = user_id);
 
--- Policy for updating resumes (only owner can update)
+-- Policy: only the resume owner can update
 CREATE POLICY "Users can update their own resume" ON resumes
-  FOR UPDATE USING (auth.uid() = user_id);
+  FOR UPDATE USING ((SELECT auth.uid()) = user_id);
 
--- Policy for deleting resumes (only owner can delete)
+-- Policy: only the resume owner can delete
 CREATE POLICY "Users can delete their own resume" ON resumes
-  FOR DELETE USING (auth.uid() = user_id);
+  FOR DELETE USING ((SELECT auth.uid()) = user_id);
 
 -- Create function to automatically update updated_at
 CREATE OR REPLACE FUNCTION update_updated_at_column()

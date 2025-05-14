@@ -35,18 +35,18 @@ ALTER TABLE jobs ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Jobs are viewable by everyone" ON jobs
   FOR SELECT USING (true);
 
--- Policy for creating jobs (authenticated users only)
+--- Only authenticated users can create jobs
 CREATE POLICY "Users can create jobs" ON jobs
-  FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+  FOR INSERT WITH CHECK ((SELECT auth.role()) = 'authenticated');
 
--- Policy for updating jobs (only job creator can update)
+-- Only the job creator can update
 CREATE POLICY "Users can update their own jobs" ON jobs
-  FOR UPDATE USING (auth.uid() = user_id);
+  FOR UPDATE USING ((SELECT auth.uid()) = user_id);
 
--- Policy for deleting jobs (only job creator can delete)
+-- Only the job creator can delete
 CREATE POLICY "Users can delete their own jobs" ON jobs
-  FOR DELETE USING (auth.uid() = user_id);
-
+  FOR DELETE USING ((SELECT auth.uid()) = user_id);
+  
 -- Create function to automatically update updated_at
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
