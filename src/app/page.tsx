@@ -25,6 +25,10 @@ export default function HomePage() {
   const [jobs, setJobs] = useState<JobType[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
+  const [hasMore, setHasMore] = useState(true)
+  const [currentPage, setCurrentPage] = useState(0)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
+  const PAGE_SIZE = 10
   const [filters, setFilters] = useState<FilterState>({
     experience: [],
     jobType: [],
@@ -32,8 +36,13 @@ export default function HomePage() {
     location: []
   })
 
-  const fetchJobs = useCallback(async (filters: FilterState) => {
-    setIsLoading(true)
+  const fetchJobs = useCallback(async (filters: FilterState, loadMore = false) => {
+    if (!loadMore) {
+      setIsLoading(true)
+    } else {
+      setIsLoadingMore(true)
+    }
+
     let query = supabase
       .from('jobs')
       .select('*')
@@ -59,7 +68,9 @@ export default function HomePage() {
       query = query.or(`title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,skills.cs.{${searchTerm}}`)
     }
 
-    query = query.order('posted_date', { ascending: false })
+    query = query
+      .order('posted_date', { ascending: false })
+      .range(currentPage * PAGE_SIZE, (currentPage * PAGE_SIZE) + PAGE_SIZE - 1)
 
     const { data, error } = await query
 
@@ -68,9 +79,16 @@ export default function HomePage() {
       return
     }
 
-    setJobs(data || [])
+    if (loadMore) {
+      setJobs(prev => [...prev, ...(data || [])])
+    } else {
+      setJobs(data || [])
+    }
+    
+    setHasMore(data?.length === PAGE_SIZE)
     setIsLoading(false)
-  }, [searchTerm, supabase])
+    setIsLoadingMore(false)
+  }, [searchTerm, supabase, currentPage])
 
   const handleFilterChange = (category: keyof FilterState, value: string) => {
     setFilters(prev => {
@@ -90,17 +108,25 @@ export default function HomePage() {
     })
   }
 
+  const handleLoadMore = () => {
+    setCurrentPage(prev => prev + 1)
+    fetchJobs(filters, true)
+  }
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
+    setCurrentPage(0)
     fetchJobs(filters)
   }
 
   const applyFilters = () => {
+    setCurrentPage(0)
     fetchJobs(filters)
   }
 
   const handleCategoryClick = (category: string) => {
     setSearchTerm(category)
+    setCurrentPage(0)
     fetchJobs({
       ...filters,
       skills: category === 'Software Development' ? ['React', 'Node.js', 'Python'] : [],
@@ -109,7 +135,7 @@ export default function HomePage() {
 
   useEffect(() => {
     fetchJobs(filters)
-  }, [fetchJobs, filters])
+  }, [fetchJobs])
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -354,12 +380,12 @@ export default function HomePage() {
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-2xl font-bold">Featured Jobs</h2>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-muted-foreground">Sort by:</span>
+                    {/* <span className="text-sm text-muted-foreground">Sort by:</span>
                     <select className="text-sm border rounded p-1">
                       <option>Most Recent</option>
                       <option>Relevance</option>
                       <option>Salary: High to Low</option>
-                    </select>
+                    </select> */}
                   </div>
                 </div>
                 <div className="space-y-4">
@@ -377,11 +403,18 @@ export default function HomePage() {
                     </div>
                   )}
                 </div>
-                <div className="mt-8 flex justify-center">
-                  <Button variant="outline" className="mx-auto">
-                    Load More Jobs
-                  </Button>
-                </div>
+                {(jobs.length > 0 && hasMore) && (
+                  <div className="mt-8 flex justify-center">
+                    <Button 
+                      variant="outline" 
+                      className="mx-auto"
+                      onClick={handleLoadMore}
+                      disabled={isLoadingMore}
+                    >
+                      {isLoadingMore ? 'Loading...' : 'Load More Jobs'}
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
