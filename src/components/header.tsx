@@ -36,7 +36,7 @@ export default function Header() {
             </Button>
           </SheetTrigger>
           <SheetContent side="left">
-            <div className="flex flex-col gap-6 py-6">
+            <div className="flex flex-col gap-10 p-6">
               <Link href="/" className="text-2xl font-bold font-dancing-script">
                 Roamploy
               </Link>
