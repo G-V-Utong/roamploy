@@ -22,6 +22,7 @@ export interface JobType {
     salary_min: string
     salary_max: string
     salary_currency: string
+    is_featured: boolean
   }
   
   // Resume Types

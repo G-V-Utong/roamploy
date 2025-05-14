@@ -394,7 +394,9 @@ export default function HomePage() {
                       Loading jobs...
                     </div>
                   ) : jobs.length > 0 ? (
-                    jobs.map((job) => (
+                    jobs
+                    .filter((job) => job.is_featured)
+                    .map((job) => (
                       <JobCard key={job.id} job={job} />
                     ))
                   ) : (

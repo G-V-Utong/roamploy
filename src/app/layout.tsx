@@ -14,8 +14,18 @@ const dancingScript = Dancing_Script({
 })
 
 export const metadata: Metadata = {
-  title: "Roamploy - Find Remote Jobs",
-  description: "Discover remote job opportunities across different fields and skills",
+  metadataBase: new URL("https://roamploy.com"),
+  title: "Roamploy - Find Remote Jobs in Nigeria",
+  description: "Discover remote job opportunities across different fields and skills from the comfort of your home in Nigeria.",
+  openGraph: {
+    title: "Roamploy - Find Remote Jobs in Nigeria",
+    description:
+      "Discover remote job opportunities across different fields and skills from the comfort of your home in Nigeria.",
+    url: "https://roamploy.com",
+    siteName: "Roamploy",
+    images: [],
+    locale: "en-EN",
+  },
 }
 
 export default function RootLayout({
