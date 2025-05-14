@@ -8,13 +8,13 @@ export default function Footer() {
           <span className="text-xl font-bold font-dancing-script text-black">Roamploy</span>
         </div>
         <nav className="flex gap-4 md:gap-6 flex-wrap">
-          <Link href="#" className="text-sm text-black">
+          <Link href="/about" className="text-sm text-black">
             About
           </Link>
-          <Link href="#" className="text-sm text-black">
+          <Link href="/privacy" className="text-sm text-black">
             Privacy
           </Link>
-          <Link href="#" className="text-sm text-black">
+          <Link href="/terms" className="text-sm text-black">
             Terms
           </Link>
           <Link href="#" className="text-sm text-black">
