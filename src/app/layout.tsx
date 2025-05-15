@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { AuthProvider } from "@/components/auth/auth-context"
 import NewsletterModal from "@/components/newsletter-modal"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Toaster } from "sonner"
 
 const inter = Inter({ subsets: ["latin"] })
 const dancingScript = Dancing_Script({
@@ -39,6 +40,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <AuthProvider>
             {children}
+            <Toaster />
             <SpeedInsights/>
             <NewsletterModal />
           </AuthProvider>

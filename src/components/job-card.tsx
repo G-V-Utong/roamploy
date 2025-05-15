@@ -1,11 +1,11 @@
 "use client"
-import Link from "next/link"
+// import Link from "next/link"
 import { MapPin, Clock, DollarSign, Bookmark } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import type { JobType } from "@/lib/types"
-import { formatRelativeDate, capitalizeJobType } from "@/lib/utils"
+import { formatRelativeDate, capitalizeJobType, formatSalaryNumber } from "@/lib/utils"
 import { useAuth } from "@/components/auth/auth-context"
 import { useState, useEffect } from "react"
 import { supabase } from "@/lib/supabase"
@@ -76,7 +76,8 @@ export default function JobCard({ job }: JobCardProps) {
 
   const handleViewJob = () => {
     if (!user) {
-      router.push('/signin')
+      toast.error('Please sign in to view job details')
+      router.push('/signin?redirect=/jobs/' + job.id)
       return
     }
     router.push(`/jobs/${job.id}`)
@@ -96,10 +97,8 @@ export default function JobCard({ job }: JobCardProps) {
                 />
               </div>
               <div>
-                <h3 className="font-semibold text-lg">
-                  <Link href={`/jobs/${job.id}`} className="hover:underline">
-                    {job.title}
-                  </Link>
+                <h3 className="font-semibold text-lg hover:underline cursor-pointer" onClick={handleViewJob}>
+                  {job.title}
                 </h3>
                 <div className="flex items-center gap-2 text-muted-foreground text-sm">
                   <span>{job.company_name}</span>
@@ -145,7 +144,9 @@ export default function JobCard({ job }: JobCardProps) {
             </div>
             <div className="flex items-center">
               <DollarSign className="mr-1 h-4 w-4" />
-              {job.salary_min || job.salary_max ? `${job.salary_min} - ${job.salary_max} ${job.salary_currency} ` : "Not specified"}
+              {job.salary_min || job.salary_max ? 
+                `${formatSalaryNumber(job.salary_min)} - ${formatSalaryNumber(job.salary_max)} ${job.salary_currency}` : 
+                "Not specified"}
             </div>
           </div>
 
