@@ -54,7 +54,7 @@ export default function NewsletterForm({ onSuccess }: NewsletterFormProps) {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         required
-        className="flex-1"
+        className="flex-1 bg-white"
       />
       <Button type="submit" disabled={loading}>
         {loading ? "Subscribing..." : "Subscribe"}

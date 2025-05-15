@@ -10,6 +10,7 @@ import { useAuth } from "@/components/auth/auth-context"
 import { useState, useEffect } from "react"
 import { supabase } from "@/lib/supabase"
 import { toast } from "sonner"
+import { useRouter } from "next/navigation"
 
 interface JobCardProps {
   job: JobType
@@ -17,6 +18,7 @@ interface JobCardProps {
 
 export default function JobCard({ job }: JobCardProps) {
   const { user } = useAuth()
+  const router = useRouter()
   const [isSaved, setIsSaved] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -70,6 +72,14 @@ export default function JobCard({ job }: JobCardProps) {
     } finally {
       setIsLoading(false)
     }
+  }
+
+  const handleViewJob = () => {
+    if (!user) {
+      router.push('/signin')
+      return
+    }
+    router.push(`/jobs/${job.id}`)
   }
 
   return (
@@ -146,9 +156,7 @@ export default function JobCard({ job }: JobCardProps) {
           <span className="text-sm text-muted-foreground">
             Posted {formatRelativeDate(job.created_at)}
           </span>
-          <Link href={`/jobs/${job.id}`}>
-            <Button>View Job</Button>
-          </Link>
+          <Button onClick={handleViewJob}>View Job</Button>
         </div>
       </CardContent>
     </Card>
