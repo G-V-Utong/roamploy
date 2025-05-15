@@ -1,5 +1,5 @@
 "use client"
-import Link from "next/link"
+// import Link from "next/link"
 import { MapPin, Clock, DollarSign, Bookmark } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -76,7 +76,8 @@ export default function JobCard({ job }: JobCardProps) {
 
   const handleViewJob = () => {
     if (!user) {
-      router.push('/signin')
+      toast.error('Please sign in to view job details')
+      router.push('/signin?redirect=/jobs/' + job.id)
       return
     }
     router.push(`/jobs/${job.id}`)
@@ -96,10 +97,8 @@ export default function JobCard({ job }: JobCardProps) {
                 />
               </div>
               <div>
-                <h3 className="font-semibold text-lg">
-                  <Link href={`/jobs/${job.id}`} className="hover:underline">
-                    {job.title}
-                  </Link>
+                <h3 className="font-semibold text-lg hover:underline cursor-pointer" onClick={handleViewJob}>
+                  {job.title}
                 </h3>
                 <div className="flex items-center gap-2 text-muted-foreground text-sm">
                   <span>{job.company_name}</span>

@@ -1,9 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Link from "next/link"
 import { Building, MapPin, Users, ExternalLink, Briefcase } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { capitalizeJobType } from "@/lib/utils"
+import { toast } from "sonner"
+import { useAuth } from "@/components/auth/auth-context"
+import { useRouter } from "next/navigation"
+// import { JobType } from "@/lib/types"
 
 interface CompanyCardProps {
   company: {
@@ -24,8 +29,32 @@ interface CompanyCardProps {
   }
   viewMode?: "grid" | "list"
 }
+// interface JobCardProps {
+//   job: JobType
+// }
 
 export default function CompanyCard({ company, viewMode = "grid" }: CompanyCardProps) {
+    const router = useRouter()
+    const { user } = useAuth()
+
+    const handleViewJob = (jobId: any) => {
+        if (!user) {
+          toast.error('Please sign in to view job details')
+          router.push('/signin?redirect=/jobs/' + jobId)
+          return
+        }
+        router.push(`/jobs/${jobId}`)
+    }
+    const handleViewCompany = () => {
+        if (!user) {
+          toast.error('Please sign in to view company details')
+          router.push('/signin?redirect=/companies/' + company.id)
+            return
+        }
+        router.push(`/companies/${company.id}`)
+    }
+
+
   if (viewMode === "list") {
     return (
       <Card>
@@ -141,20 +170,18 @@ export default function CompanyCard({ company, viewMode = "grid" }: CompanyCardP
               Open Positions ({company.jobs.length})
             </div>
             {company.jobs.slice(0, 2).map((job) => (
-              <Link key={job.id} href={`/jobs/${job.id}`}>
+              <div key={job.id} className="block cursor-pointer" onClick={() => handleViewJob(job.id)}>
                 <div className="text-sm hover:bg-muted p-2 rounded-lg mb-1">
                   <div className="font-medium">{job.title}</div>
                   <div className="text-muted-foreground flex items-center gap-1">
                     <MapPin className="h-3 w-3" /> {job.location}
                   </div>
                 </div>
-              </Link>
+              </div>
             ))}
             {company.jobs.length > 2 && (
-              <Button variant="ghost" size="sm" className="w-full mt-2" asChild>
-                <Link href={`/companies/${company.id}`}>
-                  View all {company.jobs.length} positions
-                </Link>
+              <Button variant="ghost" size="sm" className="w-full mt-2" onClick={handleViewCompany}>
+                View all {company.jobs.length} positions
               </Button>
             )}
           </div>
