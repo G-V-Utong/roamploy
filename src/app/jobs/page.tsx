@@ -23,6 +23,9 @@ export default function JobsPage() {
   const [jobs, setJobs] = useState<JobType[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
+  const [currentPage, setCurrentPage] = useState(0)
+  const [totalPages, setTotalPages] = useState(1)
+  const PAGE_SIZE = 20
   const [filters, setFilters] = useState<FilterState>({
     experience: [],
     jobType: [],
@@ -33,49 +36,75 @@ export default function JobsPage() {
   // Move fetchJobs into useCallback to prevent unnecessary recreation
   const fetchJobs = useCallback(async (filters: FilterState) => {
     setIsLoading(true)
-    let query = supabase
-      .from('jobs')
-      .select('*')
+    
+    try {
+      // First, get total count for pagination
+      let countQuery = supabase
+        .from('jobs')
+        .select('*', { count: 'exact', head: true })
+
+      // Apply filters to count query
+      if (filters.experience.length > 0) {
+        countQuery = countQuery.in('experience', filters.experience)
+      }
+      if (filters.jobType.length > 0) {
+        countQuery = countQuery.in('job_type', filters.jobType.map(type => type.toLowerCase().replace(' ', '-')))
+      }
+      if (filters.location.length > 0) {
+        const locationConditions = filters.location.map(loc => `location.ilike.%${loc}%`)
+        countQuery = countQuery.or(locationConditions.join(','))
+      }
+      if (filters.skills.length > 0) {
+        countQuery = countQuery.contains('skills', filters.skills)
+      }
+      if (searchTerm) {
+        countQuery = countQuery.or(`title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,skills.cs.{${searchTerm}}`)
+      }
+
+      const { count, error: countError } = await countQuery
       
-    // Apply experience level filter
-    if (filters.experience.length > 0) {
-      query = query.in('experience', filters.experience)
-    }
+      if (countError) throw countError
+      
+      setTotalPages(Math.ceil((count || 0) / PAGE_SIZE))
 
-    // Apply job type filter
-    if (filters.jobType.length > 0) {
-      query = query.in('job_type', filters.jobType.map(type => type.toLowerCase().replace(' ', '-')))
-    }
+      // Now fetch the actual data with pagination
+      let query = supabase
+        .from('jobs')
+        .select('*')
+      
+      if (filters.experience.length > 0) {
+        query = query.in('experience', filters.experience)
+      }
+      if (filters.jobType.length > 0) {
+        query = query.in('job_type', filters.jobType.map(type => type.toLowerCase().replace(' ', '-')))
+      }
+      if (filters.location.length > 0) {
+        const locationConditions = filters.location.map(loc => `location.ilike.%${loc}%`)
+        query = query.or(locationConditions.join(','))
+      }
+      if (filters.skills.length > 0) {
+        query = query.contains('skills', filters.skills)
+      }
+      if (searchTerm) {
+        query = query.or(`title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,skills.cs.{${searchTerm}}`)
+      }
 
-    // Apply location filter
-    if (filters.location.length > 0) {
-      const locationConditions = filters.location.map(loc => `location.ilike.%${loc}%`)
-      query = query.or(locationConditions.join(','))
-    }
+      // Add pagination
+      query = query
+        .order('posted_date', { ascending: false })
+        .range(currentPage * PAGE_SIZE, (currentPage * PAGE_SIZE) + PAGE_SIZE - 1)
 
-    // Apply skills filter (skills is an array in the database)
-    if (filters.skills.length > 0) {
-      query = query.contains('skills', filters.skills)
-    }
+      const { data, error } = await query
 
-    // Apply search term if exists
-    if (searchTerm) {
-      query = query.or(`title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,skills.cs.{${searchTerm}}`)
-    }
-
-    // Order by posted date
-    query = query.order('posted_date', { ascending: false })
-
-    const { data, error } = await query
-
-    if (error) {
+      if (error) throw error
+      
+      setJobs(data || [])
+    } catch (error) {
       console.error('Error fetching jobs:', error)
-      return
+    } finally {
+      setIsLoading(false)
     }
-
-    setJobs(data || [])
-    setIsLoading(false)
-  }, [searchTerm, supabase])
+  }, [searchTerm, currentPage, supabase])
 
   // Handle filter changes
   const handleFilterChange = (category: keyof FilterState, value: string) => {
@@ -96,14 +125,21 @@ export default function JobsPage() {
     })
   }
 
-  // Handle search
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
+  // Handle page change
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage)
+  }
+
+  // Reset pagination when filters change
+  const applyFilters = () => {
+    setCurrentPage(0)
     fetchJobs(filters)
   }
 
-  // Apply filters
-  const applyFilters = () => {
+  // Handle search with pagination reset
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    setCurrentPage(0)
     fetchJobs(filters)
   }
 
@@ -111,6 +147,40 @@ export default function JobsPage() {
   useEffect(() => {
     fetchJobs(filters)
   }, [fetchJobs, filters])
+
+  // Generate pagination numbers
+  const getPaginationNumbers = () => {
+    const current = currentPage + 1
+    const total = totalPages
+    const delta = 1 // Number of pages to show on each side of current page
+
+    const range: (number | string)[] = []
+    for (
+      let i = Math.max(1, current - delta);
+      i <= Math.min(total, current + delta);
+      i++
+    ) {
+      range.push(i)
+    }
+
+    const firstNumber = range[0]
+    if (typeof firstNumber === 'number' && firstNumber > 1) {
+      if (firstNumber > 2) {
+        range.unshift('...')
+      }
+      range.unshift(1)
+    }
+
+    const lastNumber = range[range.length - 1]
+    if (typeof lastNumber === 'number' && lastNumber < total) {
+      if (lastNumber < total - 1) {
+        range.push('...')
+      }
+      range.push(total)
+    }
+
+    return range
+  }
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -245,15 +315,34 @@ export default function JobsPage() {
               </div>
               <div className="mt-8 flex justify-center">
                 <div className="flex gap-2">
-                  <Button variant="outline" size="icon" disabled>
+                  <Button 
+                    variant="outline" 
+                    size="icon" 
+                    disabled={currentPage === 0} 
+                    onClick={() => handlePageChange(currentPage - 1)}
+                  >
                     &lt;
                   </Button>
-                  <Button variant="outline" className="bg-primary text-primary-foreground">
-                    1
-                  </Button>
-                  <Button variant="outline">2</Button>
-                  <Button variant="outline">3</Button>
-                  <Button variant="outline" size="icon">
+                  {getPaginationNumbers().map((page, index) => (
+                    typeof page === 'number' ? (
+                      <Button 
+                        key={index} 
+                        variant="outline" 
+                        className={page === currentPage + 1 ? "bg-primary text-primary-foreground" : ""}
+                        onClick={() => handlePageChange(page - 1)}
+                      >
+                        {page}
+                      </Button>
+                    ) : (
+                      <span key={index} className="text-muted-foreground">{page}</span>
+                    )
+                  ))}
+                  <Button 
+                    variant="outline" 
+                    size="icon" 
+                    disabled={currentPage === totalPages - 1} 
+                    onClick={() => handlePageChange(currentPage + 1)}
+                  >
                     &gt;
                   </Button>
                 </div>

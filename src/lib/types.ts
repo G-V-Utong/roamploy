@@ -111,3 +111,14 @@ export interface JobType {
     projects: Projects
     certifications: Certifications
   }
+
+  export interface Company {
+    id: string
+    name: string
+    logo: string
+    description: string
+    industry: string
+    size: string
+    website: string
+    jobCount: number
+  }

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import type { JobType } from "@/lib/types"
-import { formatRelativeDate, capitalizeJobType } from "@/lib/utils"
+import { formatRelativeDate, capitalizeJobType, formatSalaryNumber } from "@/lib/utils"
 import { useAuth } from "@/components/auth/auth-context"
 import { useState, useEffect } from "react"
 import { supabase } from "@/lib/supabase"
@@ -145,7 +145,9 @@ export default function JobCard({ job }: JobCardProps) {
             </div>
             <div className="flex items-center">
               <DollarSign className="mr-1 h-4 w-4" />
-              {job.salary_min || job.salary_max ? `${job.salary_min} - ${job.salary_max} ${job.salary_currency} ` : "Not specified"}
+              {job.salary_min || job.salary_max ? 
+                `${formatSalaryNumber(job.salary_min)} - ${formatSalaryNumber(job.salary_max)} ${job.salary_currency}` : 
+                "Not specified"}
             </div>
           </div>
 

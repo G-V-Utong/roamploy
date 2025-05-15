@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
+// import { Company, JobType } from "./types"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -40,3 +41,33 @@ export function formatRelativeDate(date: string | Date) {
     return years === 1 ? '1 year ago' : `${years} years ago`
   }
 }
+
+export function formatSalaryNumber(value: string | number | undefined): string {
+  if (!value) return ''
+  return new Intl.NumberFormat().format(Number(value))
+}
+
+// export function extractCompanies(jobs: JobType[]): Company[] {
+//   const companiesMap = new Map<string, Company>()
+
+//   jobs.forEach((job) => {
+//     if (!companiesMap.has(job.company_name)) {
+//       companiesMap.set(job.company_name, {
+//         id: job.company_name.toLowerCase().replace(/\s+/g, "-"),
+//         name: job.company_name,
+//         logo: job.companyLogo,
+//         description: job.companyDescription,
+//         industry: job.companyIndustry,
+//         size: job.companySize,
+//         website: job.company_website,
+//         jobCount: 1,
+//       })
+//     } else {
+//       const company = companiesMap.get(job.company_name)!
+//       company.jobCount += 1
+//       companiesMap.set(job.company_name, company)
+//     }
+//   })
+
+//   return Array.from(companiesMap.values())
+// }

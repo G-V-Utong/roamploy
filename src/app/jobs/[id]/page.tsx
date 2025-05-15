@@ -22,7 +22,7 @@ import Footer from "@/components/footer";
 import SaveJobButton from "@/components/save-job-button";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-import { formatRelativeDate, capitalizeJobType } from "@/lib/utils";
+import { formatRelativeDate, capitalizeJobType, formatSalaryNumber } from "@/lib/utils";
 
 interface JobData {
   id: string;
@@ -174,7 +174,7 @@ export default async function JobPage({ params, searchParams }: PageProps) {
                     <h3 className="text-sm font-medium">Salary</h3>
                     <p className="text-sm">
                       {job.salary_min || job.salary_max
-                        ? `${job.salary_min} - ${job.salary_max} ${job.salary_currency} `
+                        ? `${formatSalaryNumber(job.salary_min)} - ${formatSalaryNumber(job.salary_max)} ${job.salary_currency} `
                         : "Not specified"}
                     </p>
                   </CardContent>
