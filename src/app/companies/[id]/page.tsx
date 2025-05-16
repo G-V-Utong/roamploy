@@ -39,9 +39,9 @@ interface CompanyData {
   }>
 }
 
-interface companyName {
-  company_name: string
-}
+// interface companyName {
+//   company_name: string
+// }
 
 interface PageProps {
   params: Promise<{ id: string }>
