@@ -57,7 +57,7 @@ export default function CompaniesPage() {
         jobs?.forEach(job => {
           if (!companiesMap.has(job.company_name)) {
             companiesMap.set(job.company_name, {
-              id: job.company_name.toLowerCase().replace(/\s+/g, '-'),
+              id: job.company_name.replace(/\s+/g, '-'),
               name: job.company_name,
               logo: job.company_logo || '',
               website: job.company_website || '',
@@ -140,7 +140,7 @@ export default function CompaniesPage() {
       <Header />
       <main className="flex-1">
         <div className="bg-muted py-8">
-          <div className="container px-4 md:px-6">
+          <div className="container px-4 md:px-6 m-auto">
             <div className="max-w-3xl mx-auto space-y-2">
               <h1 className="text-2xl font-bold text-center mb-4">Discover Remote-Friendly Companies</h1>
               <div className="relative">
