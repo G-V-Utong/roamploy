@@ -10,7 +10,6 @@ import {
   DollarSign,
   Building,
   Calendar,
-  Share2,
   ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -20,6 +19,7 @@ import NewsletterForm from "@/components/newsletter-form";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import SaveJobButton from "@/components/save-job-button";
+import ShareButton from "@/components/share-button";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { formatRelativeDate, capitalizeJobType, formatSalaryNumber } from "@/lib/utils";
@@ -144,9 +144,11 @@ export default async function JobPage({ params, searchParams }: PageProps) {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="icon">
-                    <Share2 className="h-4 w-4" />
-                  </Button>
+                  <ShareButton 
+                    title={`${job.title} at ${job.company_name}`}
+                    text={`Check out this job: ${job.title} at ${job.company_name}`}
+                    url={`${process.env.NEXT_PUBLIC_APP_URL}/jobs/${job.id}`}
+                  />
                   <SaveJobButton jobId={job.id} initialSavedState={isSaved} />
                   <Link
                     href={getApplicationLink(job)}
