@@ -53,6 +53,23 @@ interface PageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
+export async function generateStaticParams() {
+  const supabase = createServerComponentClient({ cookies })
+  
+  // Fetch all job IDs from Supabase
+  const { data: jobs } = await supabase
+    .from('jobs')
+    .select('id')
+    .order('posted_date', { ascending: false })
+  
+  if (!jobs) return []
+
+  // Return array of params objects
+  return jobs.map((job) => ({
+    id: job.id.toString()
+  }))
+}
+
 export default async function JobPage({ params, searchParams }: PageProps) {
   const resolvedParams = await params;
   const supabase = createServerComponentClient({ cookies });
