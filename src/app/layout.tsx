@@ -22,11 +22,13 @@ export const metadata: Metadata = {
     title: "Roamploy - Find Remote Jobs in Nigeria",
     description:
       "Discover remote job opportunities across different fields and skills from the comfort of your home in Nigeria.",
-    url: "https://roamploy.com",
+    url: "https://www.roamploy.com",
     siteName: "Roamploy",
     images: [
       {
         url: "/images/metadata.jpg",
+        width: 860,
+        height: 800,
       },
     ],
     locale: "en-EN",
