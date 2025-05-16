@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { notFound, redirect } from "next/navigation";
+// "use client"
+import { notFound } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -55,16 +57,6 @@ export default async function JobPage({ params, searchParams }: PageProps) {
   const resolvedParams = await params;
   const supabase = createServerComponentClient({ cookies });
 
-  // Check authentication first
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (!session) {
-    // Redirect to sign in with return URL
-    redirect(`/signin?redirect=/jobs/${resolvedParams.id}`);
-  }
-
   // Fetch job from Supabase
   const { data: job, error } = await supabase
     .from("jobs")
@@ -74,17 +66,22 @@ export default async function JobPage({ params, searchParams }: PageProps) {
 
   if (error || !job) return notFound();
 
+  // Get user's session to check if job is saved
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
   let isSaved = false;
 
-  // Check if job is saved
-  const { data: savedJob } = await supabase
-    .from("saved_jobs")
-    .select("id")
-    .eq("job_id", resolvedParams.id)
-    .eq("user_id", session.user.id)
-    .single();
+  if (session?.user) {
+    const { data: savedJob } = await supabase
+      .from("saved_jobs")
+      .select("id")
+      .eq("job_id", resolvedParams.id)
+      .eq("user_id", session.user.id)
+      .single();
 
-  isSaved = !!savedJob;
+    isSaved = !!savedJob;
+  }
 
   // Helper function to get application link
   const getApplicationLink = (job: JobData) => {
