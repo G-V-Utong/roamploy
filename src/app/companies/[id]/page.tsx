@@ -39,8 +39,29 @@ interface CompanyData {
   }>
 }
 
+interface companyName {
+  company_name: string
+}
+
 interface PageProps {
   params: Promise<{ id: string }>
+}
+
+export async function generateStaticParams() {
+  const supabase = createServerComponentClient({ cookies })
+  
+  // Fetch unique company names from jobs table
+  const { data: companies } = await supabase
+    .from('jobs')
+    .select('company_name')
+    
+  
+  if (!companies) return []
+
+  // Convert company names to URL-friendly format and return as params
+  return companies.map((company: companyName) => ({
+    id: company.company_name.replace(/\s+/g, '-')
+  }))
 }
 
 export default async function CompanyPage({ params }: PageProps) {
