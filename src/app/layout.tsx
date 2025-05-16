@@ -24,7 +24,11 @@ export const metadata: Metadata = {
       "Discover remote job opportunities across different fields and skills from the comfort of your home in Nigeria.",
     url: "https://roamploy.com",
     siteName: "Roamploy",
-    images: [],
+    images: [
+      {
+        url: "/images/metadata.jpg",
+      },
+    ],
     locale: "en-EN",
   },
 }
@@ -46,6 +50,7 @@ export default function RootLayout({
           </AuthProvider>
         </ThemeProvider>
       </body>
+      {/* <script src="//web.webformscr.com/apps/fc3/build/loader.js" async sp-form-id="8a18dc650577ebfddc9532f21583cdaf0112a0c1685c6b14e38dbb3940c81af0"></script> */}
     </html>
   )
 }
