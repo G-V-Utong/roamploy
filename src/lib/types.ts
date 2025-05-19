@@ -122,3 +122,83 @@ export interface JobType {
     website: string
     jobCount: number
   }
+
+  export type EventFormat = 'online' | 'in-person' | 'hybrid';
+export type EventType = 'seminar' | 'bootcamp' | 'workshop' | 'course';
+
+export interface BlogPost {
+  id: string;
+  title: string;
+  excerpt: string;
+  author: string;
+  author_avatar: string;
+  authorAvatar: string; // For component compatibility
+  category: string;
+  read_time: string;
+  readTime: string; // For component compatibility
+  publish_date: string;
+  publishDate: string; // For component compatibility
+  image: string;
+  featured?: boolean;
+  tags: string[];
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface Internship {
+  id: string;
+  title: string;
+  company: string;
+  company_logo: string;
+  companyLogo: string; // For component compatibility
+  location: string;
+  duration: string;
+  stipend: string;
+  deadline: string;
+  description: string;
+  requirements: string[];
+  skills: string[];
+  featured?: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface CareerEvent {
+  id: string;
+  title: string;
+  organizer: string;
+  organizer_logo: string;
+  organizerLogo: string; // For component compatibility
+  type: EventType;
+  format: EventFormat;
+  start_date: string;
+  startDate: string; // For component compatibility
+  end_date: string;
+  endDate: string; // For component compatibility
+  location?: string;
+  price: string;
+  description: string;
+  topics: string[];
+  featured?: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface JobFair {
+  id: string;
+  title: string;
+  organizer: string;
+  organizer_logo: string;
+  organizerLogo: string; // For component compatibility
+  date: string;
+  time: string;
+  location: string;
+  format: EventFormat;
+  description: string;
+  companies: string[];
+  registration_link: string;
+  registrationLink: string; // For component compatibility
+  featured?: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
