@@ -25,7 +25,7 @@ export default function Footer() {
           <Link href="#" className="text-sm text-black">
             Twitter
           </Link>
-          <Link href="#" className="text-sm text-black">
+          <Link href="https://www.linkedin.com/company/107356818" target="_blank" rel="noopener noreferrer" className="text-sm text-black">
             LinkedIn
           </Link>
         </div>
