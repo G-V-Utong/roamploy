@@ -50,7 +50,7 @@ export default function Header() {
                 <Link href="/companies" className="text-base font-medium">
                   Companies
                 </Link>
-                <Link href="/" className="text-base font-medium">
+                <Link href="/resources" className="text-base font-medium">
                   Resources
                 </Link>
                 {user ? (
@@ -94,7 +94,7 @@ export default function Header() {
           <Link href="/companies" className="text-sm font-medium">
             Companies
           </Link>
-          <Link href="/" className="text-sm font-medium">
+          <Link href="/resources" className="text-sm font-medium">
             Resources
           </Link>
         </nav>
