@@ -240,6 +240,15 @@ export default function DashboardPage() {
             </div>
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+              {/* <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium">Applications</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">3</div>
+                  <p className="text-xs text-muted-foreground">+2 this week</p>
+                </CardContent>
+              </Card> */}
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm font-medium">Saved Jobs</CardTitle>
@@ -251,6 +260,15 @@ export default function DashboardPage() {
                   </p>
                 </CardContent>
               </Card>
+              {/* <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-medium">Profile Views</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">24</div>
+                  <p className="text-xs text-muted-foreground">+10 this week</p>
+                </CardContent>
+              </Card> */}
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm font-medium">Profile Completion</CardTitle>
@@ -282,6 +300,34 @@ export default function DashboardPage() {
             </div>
 
             <div className="grid gap-6 md:grid-cols-2">
+              {/* <Card className="md:col-span-1">
+                <CardHeader>
+                  <CardTitle>Recent Applications</CardTitle>
+                  <CardDescription>Track your recent job applications</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {jobsData.slice(0, 3).map((job) => (
+                      <div key={job.id} className="flex items-start gap-4 border-b pb-4 last:border-0 last:pb-0">
+                        <div className="flex-1">
+                          <h3 className="font-medium">{job.title}</h3>
+                          <div className="text-sm text-muted-foreground">{job.company_name}</div>
+                          <div className="text-sm">Applied on May 2, 2025</div>
+                        </div>
+                        <div className="text-sm font-medium text-yellow-500">In Review</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-4">
+                    <Link href="/applications">
+                      <Button variant="outline" className="w-full">
+                        View All Applications
+                      </Button>
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card> */}
+
               <Card className="md:col-span-1">
                 <CardHeader>
                   <CardTitle>Saved Jobs</CardTitle>
